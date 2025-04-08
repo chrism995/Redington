@@ -5,3 +5,5 @@ export type LogEntry = {
   probabilityB: number;
   result: number;
 };
+
+export type CalculationOperation = "combinedWith" | "either";

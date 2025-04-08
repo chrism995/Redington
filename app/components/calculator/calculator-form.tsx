@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useCalculatorStore } from "@/lib/zustand/store";
+import { getAvailableOperations } from "@/lib/calculations";
 
 // Form validation schema
 const formSchema = z.object({
@@ -37,6 +38,7 @@ type FormValues = z.infer<typeof formSchema>;
 export function CalculatorForm() {
   const [isCalculating, setIsCalculating] = useState(false);
   const { setResult, setError, addLog } = useCalculatorStore();
+  const operations = getAvailableOperations();
 
   // Initialize form
   const {
@@ -148,18 +150,17 @@ export function CalculatorForm() {
             }}
             className="flex flex-col space-y-2"
           >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="combinedWith" id="combinedWith" />
-              <Label htmlFor="combinedWith" className="font-normal">
-                Combined With: P(A)P(B)
-              </Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="either" id="either" />
-              <Label htmlFor="either" className="font-normal">
-                Either: P(A) + P(B) - P(A)P(B)
-              </Label>
-            </div>
+            {operations.map((op) => (
+              <div key={op.id} className="flex items-center space-x-2">
+                <RadioGroupItem value={op.id} id={op.id} />
+                <Label htmlFor={op.id} className="cursor-pointer">
+                  {op.name}
+                  <span className="text-xs text-muted-foreground ml-2">
+                    {op.formula}
+                  </span>
+                </Label>
+              </div>
+            ))}
           </RadioGroup>
           <input type="hidden" {...register("operation")} />
         </div>

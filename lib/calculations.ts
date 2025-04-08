@@ -1,49 +1,58 @@
-/**
- * Calculates the combined probability (AND) of two independent events
- * Formula: P(A and B) = P(A) * P(B)
- *
- * @param probabilityA The probability of event A (between 0 and 1)
- * @param probabilityB The probability of event B (between 0 and 1)
- * @returns The combined probability
- */
-export function calculateCombined(
+import { CalculationOperation } from "./types";
+
+type CalculationFunction = (
   probabilityA: number,
   probabilityB: number
-): number {
-  return probabilityA * probabilityB;
-}
+) => number;
 
-/**
- * Calculates the probability of either event occurring (OR) for two events
- * Formula: P(A or B) = P(A) + P(B) - P(A) * P(B)
- *
- * @param probabilityA The probability of event A (between 0 and 1)
- * @param probabilityB The probability of event B (between 0 and 1)
- * @returns The probability of either event occurring
- */
-export function calculateEither(
-  probabilityA: number,
-  probabilityB: number
-): number {
-  return probabilityA + probabilityB - probabilityA * probabilityB;
-}
+const calculationRegistry: Record<CalculationOperation, CalculationFunction> = {
+  combinedWith: (probabilityA, probabilityB) => probabilityA * probabilityB,
+  either: (probabilityA, probabilityB) =>
+    probabilityA + probabilityB - probabilityA * probabilityB,
+};
 
-/**
- * Calculates probability based on the chosen operation
- *
- * @param probabilityA The probability of event A (between 0 and 1)
- * @param probabilityB The probability of event B (between 0 and 1)
- * @param operation The calculation type ('combinedWith' or 'either')
- * @returns The calculated probability
- */
 export function calculateProbability(
   probabilityA: number,
   probabilityB: number,
-  operation: "combinedWith" | "either"
+  operation: CalculationOperation
 ): number {
-  if (operation === "combinedWith") {
-    return calculateCombined(probabilityA, probabilityB);
-  } else {
-    return calculateEither(probabilityA, probabilityB);
+  const calculationFn = calculationRegistry[operation];
+
+  if (!calculationFn) {
+    // Implement error logging at later date
+    console.error("The expected operation is not available in the registry.");
+    return 0;
   }
+
+  return calculationFn(probabilityA, probabilityB);
 }
+
+/**
+ * @returns Array of operation details including id, name, description, and formula for the front end to be dynamically generated
+ */
+export function getAvailableOperations(): Array<{
+  id: CalculationOperation;
+  name: string;
+  description: string;
+  formula: string;
+}> {
+  return [
+    {
+      id: "combinedWith",
+      name: "Combined With",
+      description:
+        "Calculates the probability of both events occurring together",
+      formula: "P(A and B) = P(A) × P(B)",
+    },
+    {
+      id: "either",
+      name: "Either",
+      description: "Calculates the probability of either event occurring",
+      formula: "P(A or B) = P(A) + P(B) - P(A) × P(B)",
+    },
+  ];
+}
+
+// Export individual calculation functions for testing
+export const { combinedWith: calculateCombined, either: calculateEither } =
+  calculationRegistry;
