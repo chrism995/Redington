@@ -5,6 +5,7 @@ import { calculateProbability } from "@/lib/calculations";
 import { logCalculation } from "@/lib/logger";
 import { LogEntry } from "@/lib/types";
 
+/// Backend action to handle server side validation and probability calculation
 export async function calculateProbabilityAction(formData: FormData) {
   // Extract form data
   const rawData = {
