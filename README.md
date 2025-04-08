@@ -31,8 +31,6 @@ The application follows a standard Next.js App Router structure:
 - `/lib` - Utility functions including probability calculation logic
 - `/public` - Static assets
 
-## Development
-
 ### Prerequisites
 
 - Node.js 20.x or higher
@@ -51,8 +49,6 @@ Run the test suite with:
 npm test
 
 ## Architecture Decisions
-
-### Backend-as-a-Service Approach
 
 Rather than maintaining a separate backend service, the calculation logic is implemented directly in the Next.js API routes. This approach:
 
